@@ -110,5 +110,4 @@ echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted" >> "$LOG_FILE"
 
 
 # If we're here, we're running in the background
-setup_network
 check_internet
