@@ -46,6 +46,6 @@ teardown_network() {
 }
 
 teardown_network
-echo "AT+CFUN=1,1" | sudo socat - /dev/ttyUSB2,crnl
+echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
 sleep 30
 echo "Quectel Stopped"

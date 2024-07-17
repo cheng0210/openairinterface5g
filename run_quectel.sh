@@ -90,16 +90,11 @@ teardown_network() {
     ip link set $INTERFACE down >> "$LOG_FILE" 2>&1
 
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..." >> "$LOG_FILE"
-    echo "AT+CFUN=1,1" | sudo socat - /dev/ttyUSB2,crnl >> "$LOG_FILE"
+    echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
     sleep 60
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 }
 
-
-echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..."
-echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
-sleep 60
-echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 
 # Main script execution starts here
 if [ "$1" != "background" ]; then
@@ -107,6 +102,12 @@ if [ "$1" != "background" ]; then
     setsid "$0" background "$@" </dev/null &>/dev/null &
     exit 0
 fi
+
+echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..." >> "$LOG_FILE"
+echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
+sleep 60
+echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted" >> "$LOG_FILE"
+
 
 # If we're here, we're running in the background
 setup_network
