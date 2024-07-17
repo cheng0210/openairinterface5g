@@ -95,6 +95,12 @@ teardown_network() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 }
 
+
+echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..." >> "$LOG_FILE"
+echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl >> "$LOG_FILE"
+sleep 30
+echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
+
 # Main script execution starts here
 if [ "$1" != "background" ]; then
     echo "Starting script in background..."
