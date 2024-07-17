@@ -89,8 +89,10 @@ teardown_network() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Removing the $INTERFACE" >> "$LOG_FILE"
     ip link set $INTERFACE down >> "$LOG_FILE" 2>&1
 
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..."
     echo "AT+CFUN=1,1" | sudo socat - /dev/ttyUSB2,crnl
-    sleep 10
+    sleep 30
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 }
 
 # Main script execution starts here
