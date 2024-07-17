@@ -25,25 +25,27 @@ DNN0=oai
 DNN_TYPE0=${DNN_TYPE0:-ipv4}
 #DNN_TYPE1=${DNN_TYPE1:-ipv4v6}
 DEVICE=/dev/cdc-wdm*
-LOG_FILE="quectel_connection.log"  # Path to the log file
 
 # Function to tear down network sessions
 teardown_network() {
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -d ${DEVICE} -p --disconnect=0" >> "$LOG_FILE"
-    mbimcli -d $DEVICE -p --disconnect=0 >> "$LOG_FILE" 2>&1
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -d ${DEVICE} -p --disconnect=0" 
+    mbimcli -d $DEVICE -p --disconnect=0  2>&1
     if [[ -v DNN1 ]]; then
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -d ${DEVICE} -p --disconnect=1" >> "$LOG_FILE"
-        mbimcli -d $DEVICE -p --disconnect=1 >> "$LOG_FILE" 2>&1
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link set ${INTERFACE}.1 down" >> "$LOG_FILE"
-        ip link set $INTERFACE.1 down >> "$LOG_FILE" 2>&1
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link del link wwan0 name ${INTERFACE}.1 type vlan id 1" >> "$LOG_FILE"
-        ip link del link wwan0 name $INTERFACE.1 type vlan id 1 >> "$LOG_FILE" 2>&1
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -d ${DEVICE} -p --disconnect=1" 
+        mbimcli -d $DEVICE -p --disconnect=1  2>&1
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link set ${INTERFACE}.1 down" 
+        ip link set $INTERFACE.1 down  2>&1
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link del link wwan0 name ${INTERFACE}.1 type vlan id 1" 
+        ip link del link wwan0 name $INTERFACE.1 type vlan id 1  2>&1
     fi
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --set-radio-state=off" >> "$LOG_FILE"
-    mbimcli -p -d $DEVICE --set-radio-state=off >> "$LOG_FILE" 2>&1
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --set-radio-state=off" 
+    mbimcli -p -d $DEVICE --set-radio-state=off  2>&1
 
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - Removing the $INTERFACE" >> "$LOG_FILE"
-    ip link set $INTERFACE down >> "$LOG_FILE" 2>&1
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - Removing the $INTERFACE" 
+    ip link set $INTERFACE down  2>&1
 }
 
 teardown_network
+echo "AT+CFUN=1,1" | sudo socat - /dev/ttyUSB2,crnl
+sleep 10
+echo "Quectel Stopped"

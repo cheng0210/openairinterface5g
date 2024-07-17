@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm quectel_connection.log
-sudo apt-get install -y libmbim-utils
+sudo apt-get install -y libmbim-utils socat
 
 # Environment variables for network configuration
 INTERFACE=${INTERFACE:-wwan0}
@@ -15,10 +15,8 @@ LOG_FILE="quectel_connection.log"  # Path to the log file
 # Function to check if network interface exists
 check_interface() {
     if ip link show $INTERFACE &> /dev/null; then
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - Network interface $INTERFACE already exists. Skipping setup..." >> "$LOG_FILE"
         return 1
     else
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - Network interface $INTERFACE does not exist." >> "$LOG_FILE"
         return 0
     fi
 }
@@ -90,6 +88,9 @@ teardown_network() {
 
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Removing the $INTERFACE" >> "$LOG_FILE"
     ip link set $INTERFACE down >> "$LOG_FILE" 2>&1
+
+    echo "AT+CFUN=1,1" | sudo socat - /dev/ttyUSB2,crnl
+    sleep 10
 }
 
 # Main script execution starts here

@@ -158,7 +158,7 @@ while read -r line || [[ -n "$line" ]] ; do
 			*"IP"*)
 				row=$(parse_ip "$line")
 				ipv6_addresses+=("$row")
-			        continue
+				continue
 				;;
 			*"Gateway"*)
 				row=$(parse_gateway "$line")
