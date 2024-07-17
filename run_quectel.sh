@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo apt-get install -y libmbim-utils
+
 # Environment variables for network configuration
 INTERFACE=${INTERFACE:-wwan0}
 DNN0=oai
