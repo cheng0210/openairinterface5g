@@ -9,14 +9,14 @@ pids=$(pgrep "$process_name")
 # Check if any processes were found
 if [ -z "$pids" ]; then
     echo "No processes found with name '$process_name'"
-    exit 1
+else
+    # Iterate through each PID and kill the process
+    for pid in $pids; do
+        echo "Killing process $pid"
+        kill $pid
+    done
 fi
 
-# Iterate through each PID and kill the process
-for pid in $pids; do
-    echo "Killing process $pid"
-    kill $pid
-done
 
 # Environment variables for network configuration
 INTERFACE=${INTERFACE:-wwan0}
