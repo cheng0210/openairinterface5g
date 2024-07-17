@@ -96,8 +96,8 @@ teardown_network() {
 }
 
 
-echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..." >> "$LOG_FILE"
-echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl >> "$LOG_FILE"
+echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..."
+echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
 sleep 30
 echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 
