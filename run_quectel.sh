@@ -103,11 +103,5 @@ if [ "$1" != "background" ]; then
     exit 0
 fi
 
-echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..." >> "$LOG_FILE"
-echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
-sleep 60
-echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted" >> "$LOG_FILE"
-
-
 # If we're here, we're running in the background
 check_internet
