@@ -1,5 +1,6 @@
 #!/bin/bash
 
+rm quectel_connection.log
 sudo apt-get install -y libmbim-utils
 
 # Environment variables for network configuration
