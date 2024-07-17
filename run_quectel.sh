@@ -12,6 +12,23 @@ DNN_TYPE0=${DNN_TYPE0:-ipv4}
 DEVICE=/dev/cdc-wdm*
 LOG_FILE="quectel_connection.log"  # Path to the log file
 
+process_name=run_quectel
+
+# Get the list of PIDs for the given process name
+pids=$(pgrep "$process_name")
+
+# Check if any processes were found
+if [ -z "$pids" ]; then
+    echo "No processes found with name '$process_name'"
+else
+    # Iterate through each PID and kill the process
+    for pid in $pids; do
+        echo "Killing process $pid"
+        kill $pid
+    done
+fi
+
+
 # Function to check if network interface exists
 check_interface() {
     if ip link show $INTERFACE &> /dev/null; then
