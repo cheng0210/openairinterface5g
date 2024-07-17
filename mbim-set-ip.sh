@@ -190,7 +190,7 @@ execfile=$(mktemp)
 
 printf "ip link set $DEV down\n" >> $execfile
 printf "ip addr flush dev $DEV \n" >> $execfile
-printf "ip -6 addr flush dev $DEV \n" >> $execfile
+printf "ip -4 addr flush dev $DEV \n" >> $execfile
 printf "ip link set $DEV up\n" >> $execfile
 
 if [[ "${#ipv4_addresses[@]}" > 0 ]]; then
