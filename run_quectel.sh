@@ -99,7 +99,7 @@ teardown_network() {
 # Main script execution starts here
 if [ "$1" != "background" ]; then
     echo "Starting script in background..."
-    setsid "$0" background "$@" </dev/null >/dev/null &
+    setsid "$0" background "$@"  &
     exit 0
 fi
 
