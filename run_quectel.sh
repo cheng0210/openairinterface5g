@@ -90,7 +90,9 @@ teardown_network() {
     ip link set $INTERFACE down >> "$LOG_FILE" 2>&1
 
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..." >> "$LOG_FILE"
-    echo -n -e "AT+CFUN=1,1\r\n" > /dev/ttyUSB2 && cat /dev/ttyUSB2
+
+    echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
+
     sleep 60
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 }
