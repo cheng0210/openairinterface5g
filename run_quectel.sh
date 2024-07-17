@@ -23,8 +23,10 @@ if [ -z "$pids" ]; then
 else
     # Iterate through each PID and kill the process
     for pid in $pids; do
-        echo "Killing process $pid"
-        kill $pid
+        if [ $pid != $$ ]; then
+            echo "Killing process $pid"
+            kill $pid
+        fi
     done
 fi
 
