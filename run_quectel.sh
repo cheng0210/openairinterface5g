@@ -64,7 +64,7 @@ check_internet() {
             echo "$(date +'%Y-%m-%d %H:%M:%S') - Internet connection is up" >> "$LOG_FILE"
         else
             echo "$(date +'%Y-%m-%d %H:%M:%S') - Internet connection is down." >> "$LOG_FILE"
-            echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting network services..." >> "$LOG_FILE"
+            echo "$(date +'%Y-%m-%d %H:%M:%S') - Re setup network..." >> "$LOG_FILE"
             setup_network
         fi
         sleep 10  # Check every 10 sec, adjust as needed
@@ -91,14 +91,14 @@ teardown_network() {
 
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..." >> "$LOG_FILE"
     echo "AT+CFUN=1,1" | sudo socat - /dev/ttyUSB2,crnl >> "$LOG_FILE"
-    sleep 30
+    sleep 60
     echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 }
 
 
 echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting Quectel module..."
 echo "AT+CFUN=1,1" | socat - /dev/ttyUSB2,crnl
-sleep 30
+sleep 60
 echo "$(date +'%Y-%m-%d %H:%M:%S') - Quectel restarted"
 
 # Main script execution starts here
