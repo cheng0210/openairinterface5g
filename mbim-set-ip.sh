@@ -195,7 +195,7 @@ printf "ip link set $DEV up\n" >> $execfile
 
 if [[ "${#ipv4_addresses[@]}" > 0 ]]; then
 	printf "ip addr add %s dev $DEV broadcast +\n" "${ipv4_addresses[@]}" >> $execfile
-	#printf "ip route add default via $ipv4_gateway dev $DEV\n" >> $execfile
+	printf "ip route add default via $ipv4_gateway dev $DEV\n" >> $execfile
 
 	if [ -n "$ipv4_mtu" ]; then
 		printf "ip link set mtu $ipv4_mtu dev $DEV \n" >> $execfile

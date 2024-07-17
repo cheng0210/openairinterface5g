@@ -26,31 +26,37 @@ check_interface() {
 
 # Function to set up network sessions
 setup_network() {
-    if ! check_interface; then
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - Setting up $INTERFACE for testing..." >> "$LOG_FILE"
-        ip link set $INTERFACE up >> "$LOG_FILE" 2>&1
-
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --set-radio-state=on" >> "$LOG_FILE"
-        mbimcli -p -d $DEVICE --set-radio-state=on >> "$LOG_FILE" 2>&1
-        sleep 2
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --attach-packet-service" >> "$LOG_FILE"
-        mbimcli -p -d $DEVICE --attach-packet-service >> "$LOG_FILE" 2>&1
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --connect=session-id=0,apn=${DNN0},ip-type=${DNN_TYPE0}" >> "$LOG_FILE"
-        mbimcli -p -d $DEVICE --connect=session-id=0,apn=$DNN0,ip-type=$DNN_TYPE0 >> "$LOG_FILE" 2>&1
-        echo "$(date +'%Y-%m-%d %H:%M:%S') - ./mbim-set-ip.sh ${DEVICE} ${INTERFACE} 0" >> "$LOG_FILE"
-        ./mbim-set-ip.sh $DEVICE $INTERFACE 0 >> "$LOG_FILE" 2>&1
-
-        if [[ -v DNN1 ]]; then
-            echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link add link wwan0 name ${INTERFACE}.1 type vlan id 1" >> "$LOG_FILE"
-            ip link add link wwan0 name $INTERFACE.1 type vlan id 1 >> "$LOG_FILE" 2>&1
-            echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link set ${INTERFACE}.1 up" >> "$LOG_FILE"
-            ip link set $INTERFACE.1 up >> "$LOG_FILE" 2>&1
-            echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --connect=session-id=1,apn=${DNN1},ip-type=${DNN_TYPE1}" >> "$LOG_FILE"
-            mbimcli -p -d $DEVICE --connect=session-id=1,apn=$DNN1,ip-type=$DNN_TYPE1 >> "$LOG_FILE" 2>&1
-            echo "$(date +'%Y-%m-%d %H:%M:%S') - ./mbim-set-ip.sh ${DEVICE} ${INTERFACE}.1 1" >> "$LOG_FILE"
-            ./mbim-set-ip.sh $DEVICE $INTERFACE.1 1 >> "$LOG_FILE" 2>&1
-        fi
+    if check_interface; then
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - Network interface $INTERFACE does not exist. Setting up..." >> "$LOG_FILE"
+    else
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - Network interface $INTERFACE already exists. Restarting network services..." >> "$LOG_FILE"
+        teardown_network
     fi
+
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - Setting up $INTERFACE for testing..." >> "$LOG_FILE"
+    ip link set $INTERFACE up >> "$LOG_FILE" 2>&1
+
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --set-radio-state=on" >> "$LOG_FILE"
+    mbimcli -p -d $DEVICE --set-radio-state=on >> "$LOG_FILE" 2>&1
+    sleep 2
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --attach-packet-service" >> "$LOG_FILE"
+    mbimcli -p -d $DEVICE --attach-packet-service >> "$LOG_FILE" 2>&1
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --connect=session-id=0,apn=${DNN0},ip-type=${DNN_TYPE0}" >> "$LOG_FILE"
+    mbimcli -p -d $DEVICE --connect=session-id=0,apn=$DNN0,ip-type=$DNN_TYPE0 >> "$LOG_FILE" 2>&1
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - ./mbim-set-ip.sh ${DEVICE} ${INTERFACE} 0" >> "$LOG_FILE"
+    ./mbim-set-ip.sh $DEVICE $INTERFACE 0 >> "$LOG_FILE" 2>&1
+
+    if [[ -v DNN1 ]]; then
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link add link wwan0 name ${INTERFACE}.1 type vlan id 1" >> "$LOG_FILE"
+        ip link add link wwan0 name $INTERFACE.1 type vlan id 1 >> "$LOG_FILE" 2>&1
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - ip link set ${INTERFACE}.1 up" >> "$LOG_FILE"
+        ip link set $INTERFACE.1 up >> "$LOG_FILE" 2>&1
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - mbimcli -p -d ${DEVICE} --connect=session-id=1,apn=${DNN1},ip-type=${DNN_TYPE1}" >> "$LOG_FILE"
+        mbimcli -p -d $DEVICE --connect=session-id=1,apn=$DNN1,ip-type=$DNN_TYPE1 >> "$LOG_FILE" 2>&1
+        echo "$(date +'%Y-%m-%d %H:%M:%S') - ./mbim-set-ip.sh ${DEVICE} ${INTERFACE}.1 1" >> "$LOG_FILE"
+        ./mbim-set-ip.sh $DEVICE $INTERFACE.1 1 >> "$LOG_FILE" 2>&1
+    fi
+
 }
 
 # Function to perform internet connectivity check
@@ -59,8 +65,7 @@ check_internet() {
         if ping -I ${INTERFACE} -c 1 8.8.8.8 >/dev/null 2>&1; then
             echo "$(date +'%Y-%m-%d %H:%M:%S') - Internet connection is up" >> "$LOG_FILE"
         else
-            echo "$(date +'%Y-%m-%d %H:%M:%S') - Internet connection is down. Executing network teardown..." >> "$LOG_FILE"
-            teardown_network
+            echo "$(date +'%Y-%m-%d %H:%M:%S') - Internet connection is down." >> "$LOG_FILE"
             echo "$(date +'%Y-%m-%d %H:%M:%S') - Restarting network services..." >> "$LOG_FILE"
             setup_network
         fi
