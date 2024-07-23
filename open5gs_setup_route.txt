@@ -1,0 +1,5 @@
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -I INPUT --source 10.45.0.0/16 -j ACCEPT
+sudo iptables -t nat -I POSTROUTING --out-interface enp3s0f0 -j MASQUERADE
+sudo iptables -I FORWARD --in-interface enp3s0f0 --out-interface ogstun -j ACCEPT
+sudo iptables -I FORWARD --in-interface ogstun --out-interface enp3s0f0 -j ACCEPT
