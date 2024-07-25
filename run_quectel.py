@@ -38,8 +38,9 @@ def main():
             print(datetime.datetime.now().isoformat() + ": " + "Turn off the airplane mode...")
             send_at_command("at+cfun=1\r\n")
             print(datetime.datetime.now().isoformat() + ": " + "Modem reset complete.")
-            if check_internet_connection(100):
-                time.sleep(10)
+            if not check_internet_connection(100):
+                continue
+            time.sleep(10)
 
 if __name__ == "__main__":
     main()
