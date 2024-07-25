@@ -40,7 +40,7 @@ def main():
             print(datetime.datetime.now().isoformat() + ": " + "Modem reset complete.")
             if not check_internet_connection(100):
                 continue
-            time.sleep(10)
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
