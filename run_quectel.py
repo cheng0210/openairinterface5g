@@ -14,7 +14,7 @@ def send_at_command(command):
         response = ser.readline().decode('utf-8').strip()
         response = ser.readline().decode('utf-8').strip()
         # Response should be OK
-        print(f"Sent command: {command}, Response: {response}")
+        print(f"Sent command: {command[:-2]}, Response: {response}")
 
 # Ping test function
 def check_internet_connection(ping_count):
