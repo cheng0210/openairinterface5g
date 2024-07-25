@@ -24,7 +24,7 @@ def check_internet_connection(ping_count):
         if result.returncode == 0:
             print(datetime.datetime.now().isoformat() + ": " + "Ping Success")
             return True
-    print(datetime.datetime.now().isoformat() + ": " + "Ping failed {ping_count} times")
+    print(datetime.datetime.now().isoformat() + ": " + f"Ping failed {ping_count} times")
     return False
 
 # Main loop
