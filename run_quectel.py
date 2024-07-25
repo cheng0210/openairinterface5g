@@ -18,7 +18,7 @@ def send_at_command(command):
 def check_internet_connection(ping_count):
     host = "8.8.8.8"  # Google's public DNS server
     for _ in range(ping_count):
-        result = subprocess.run(['ping', '-c', '1', host], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        result = subprocess.run(['ping','-I', 'usb0' ,'-c', '1', host], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if result.returncode == 0:
             print(datetime.datetime.now().isoformat() + ": " + "Ping Success")
             return True
