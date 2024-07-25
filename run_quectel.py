@@ -12,6 +12,8 @@ def send_at_command(command):
     with serial.Serial(serial_port, baud_rate, timeout=1) as ser:
         ser.write(command.encode('utf-8'))
         response = ser.readline().decode('utf-8').strip()
+        assert command == response
+        response = ser.readline().decode('utf-8').strip()
         print(f"Sent command: {command}, Response: {response}")
 
 # Ping test function
@@ -37,7 +39,8 @@ def main():
             print(datetime.datetime.now().isoformat() + ": " + "Turn off the airplane mode...")
             send_at_command("at+cfun=1\r\n")
             print(datetime.datetime.now().isoformat() + ": " + "Modem reset complete.")
-            check_internet_connection(100)
+            if check_internet_connection(100):
+                time.sleep(10)
 
 if __name__ == "__main__":
     main()
