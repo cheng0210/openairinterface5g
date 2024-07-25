@@ -16,4 +16,7 @@ cd cmake_targets/ran_build/build
 #sudo ./nr-softmodem -O /home/oai/openairinterface5g/ci-scripts/conf_files/gnb.sa.band78.106prb.rfsim.2x2.conf --gNBs.[0].min_rxtxtime 6 --rfsim --sa
 #sudo ./nr-softmodem -O ../../../targets/PROJECTS/GENERIC-NR-5GC/CONF/gnb.sa.band41.fr1.106PRB.usrpb210.conf --sa -E --continuous-tx
 #sudo -E XDG_RUNTIME_DIR=/run/user/0 ./nr-softmodem -O ../../../targets/PROJECTS/GENERIC-NR-5GC/CONF/test.conf --sa -E --continuous-tx --gNBs.[0].min_rxtxtime 6 --dqt
-sudo ./nr-softmodem -O ../../../targets/PROJECTS/GENERIC-NR-5GC/CONF/band41_test.conf --sa -E --continuous-tx --gNBs.[0].min_rxtxtime 6
+#sudo ./nr-softmodem -O ../../../targets/PROJECTS/GENERIC-NR-5GC/CONF/band41_test.conf --sa -E --continuous-tx --gNBs.[0].min_rxtxtime 6
+#sudo ./nr-softmodem -O ../../../targets/PROJECTS/GENERIC-NR-5GC/CONF/gnb.sa.band41.fr1.106PRB.usrpb210.conf --sa -E --continuous-tx --gNBs.[0].min_rxtxtime 6
+
+sudo ./nr-softmodem -O ../../../targets/PROJECTS/GENERIC-NR-5GC/CONF/custom_band41.conf --sa -E --continuous-tx

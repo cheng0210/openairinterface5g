@@ -10,6 +10,8 @@ log/
 lte_build_oai/
 .idea/
 cmake-build-debug/
+build/
+*.mat
 
 # IDE files
 .vscode

@@ -715,8 +715,33 @@ int check_srs_pdu(const nfapi_nr_srs_pdu_t *srs_pdu, nfapi_nr_srs_pdu_t *saved_s
   return 0;
 }
 
+int srs_streaming_initialized = 0;
+
+#include <zmq.h>
+
+#define ZMQ_SERVER_ADDRESS "tcp://*:5555"  // For the publisher (sender)
+
+void *zmq_srs_context;
+void *zmq_srs_socket;
+
+void initialize_zmq_socket() {
+  zmq_srs_context = zmq_ctx_new();
+  zmq_srs_socket = zmq_socket(zmq_srs_context, ZMQ_PUB);
+  int rc = zmq_bind(zmq_srs_socket, ZMQ_SERVER_ADDRESS);
+  if (rc != 0) {
+    printf("Error binding ZMQ socket: %s\n", zmq_strerror(errno));
+    exit(1);
+  }
+}
+
+void send_srs_data_zmq(int32_t *data, int size) {
+  int total_size = size * sizeof(int32_t);
+  zmq_send(zmq_srs_socket, data, total_size, 0);
+}
+
 int phy_procedures_gNB_uespec_RX(PHY_VARS_gNB *gNB, int frame_rx, int slot_rx)
 {
+
   /* those variables to log T_GNB_PHY_PUCCH_PUSCH_IQ only when we try to decode */
   int pucch_decode_done = 0;
   int pusch_decode_done = 0;
@@ -976,6 +1001,17 @@ int phy_procedures_gNB_uespec_RX(PHY_VARS_gNB *gNB, int frame_rx, int slot_rx)
                                     snr_per_rb,
                                     &snr);
           stop_meas(&gNB->srs_channel_estimation_stats);
+
+          if (!srs_streaming_initialized){
+            initialize_zmq_socket();
+            srs_streaming_initialized = 1;
+          }
+
+          LOG_I(NR_PHY, "SRS RX %d TX%d\n", frame_parms->nb_antennas_rx, 1 << srs_pdu->num_ant_ports);
+
+          // Send srs_estimated_channel_freq over ZMQ
+          int total_elements = frame_parms->nb_antennas_rx * (1 << srs_pdu->num_ant_ports) * frame_parms->ofdm_symbol_size * N_symb_SRS;
+          send_srs_data_zmq((int32_t*)srs_estimated_channel_freq, total_elements);
         }
 
         if ((snr * 10) < gNB->srs_thres) {
